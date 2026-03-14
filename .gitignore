@@ -1,0 +1,17 @@
+# Binaries
+{{PROJECT_NAME}}
+{{PROJECT_NAME}}-*
+dist/
+
+# Build artifacts
+*.exe
+*.test
+*.out
+
+# Editor
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
