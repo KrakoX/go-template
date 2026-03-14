@@ -1,15 +1,15 @@
 version: 2
 
-project_name: {{PROJECT_NAME}}
+project_name: go-template
 
 before:
   hooks:
     - go mod tidy
 
 builds:
-  - id: {{PROJECT_NAME}}
+  - id: go-template
     main: .
-    binary: {{PROJECT_NAME}}
+    binary: go-template
     env:
       - CGO_ENABLED=0
     goos:
@@ -46,8 +46,8 @@ changelog:
 
 release:
   github:
-    owner: {{GITHUB_OWNER}}
-    name: {{REPO_NAME}}
+    owner: KrakoX
+    name: go-template
   draft: false
   prerelease: auto
   name_template: "v{{ .Version }}"

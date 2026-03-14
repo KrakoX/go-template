@@ -8,7 +8,7 @@
 #   bash setup.sh KrakoX/my-tool my-tool
 #
 # What it does:
-#   1. Replaces all {{PLACEHOLDER}} values in tracked files
+#   1. Replaces template values (KrakoX/go-template) with your project details
 #   2. Installs the pre-push git hook
 #   3. Applies GitHub branch protection via gh CLI
 #   4. Enables Dependabot alerts and security updates via gh CLI
@@ -37,28 +37,42 @@ COPYRIGHT_YEAR="$(date +%Y)"
 echo "--- Setting up: $PROJECT ($REPO) ---"
 
 # ── placeholder replacement ───────────────────────────────────────────────────
+# The template uses its own real values as placeholders.
+# We replace them with your project-specific values.
 
-echo "1/4 Replacing placeholders..."
+echo "1/4 Replacing template values..."
 
-# Use perl for cross-platform compatibility (macOS + Linux)
-while IFS= read -r -d '' file; do
-    perl -pi -e "
-        s/\\{\\{PROJECT_NAME\\}\\}/$PROJECT/g;
-        s/\\{\\{GITHUB_OWNER\\}\\}/$OWNER/g;
-        s/\\{\\{REPO_NAME\\}\\}/$REPO_NAME/g;
-        s/\\{\\{COPYRIGHT_YEAR\\}\\}/$COPYRIGHT_YEAR/g;
-    " "$file"
-done < <(find . -type f \( \
-    -name "*.go" -o \
-    -name "*.mod" -o \
-    -name "*.yml" -o \
-    -name "*.yaml" -o \
-    -name "*.md" -o \
-    -name "*.txt" -o \
-    -name "Makefile" -o \
-    -name "LICENSE" -o \
-    -name ".gitignore" \
-    \) -not -path "./.git/*" -print0)
+# go.mod: module path
+perl -pi -e "s|github\.com/KrakoX/go-template|github.com/$OWNER/$REPO_NAME|g" go.mod
+
+# .goreleaser.yaml: project name, binary name, owner, repo
+perl -pi -e "
+    s/^project_name: go-template\$/project_name: $PROJECT/;
+    s/^  - id: go-template\$/  - id: $PROJECT/;
+    s/^    binary: go-template\$/    binary: $PROJECT/;
+    s/^    owner: KrakoX\$/    owner: $OWNER/;
+    s/^    name: go-template\$/    name: $REPO_NAME/;
+" .goreleaser.yaml
+
+# Makefile: binary name
+perl -pi -e "s/^BINARY  := go-template\$/BINARY  := $PROJECT/" Makefile
+
+# main.go: binary name in version string
+perl -pi -e "s/go-template version/$PROJECT version/" main.go
+
+# .gitignore: binary name
+perl -pi -e "
+    s/^go-template\$/$PROJECT/;
+    s/^go-template-\*\$/${PROJECT}-*/;
+" .gitignore
+
+# SECURITY.md: advisory URL
+perl -pi -e "s|KrakoX/go-template|$OWNER/$REPO_NAME|g" SECURITY.md
+
+# LICENSE: copyright year and owner
+perl -pi -e "
+    s/Copyright \(c\) \d{4} KrakoX/Copyright (c) $COPYRIGHT_YEAR $OWNER/;
+" LICENSE
 
 # ── git hook ──────────────────────────────────────────────────────────────────
 
@@ -73,8 +87,6 @@ echo "3/4 Applying branch protection on main..."
 if ! command -v gh &>/dev/null; then
     echo "  WARNING: gh CLI not found — skipping GitHub API steps."
     echo "  Install gh: https://cli.github.com"
-    echo ""
-    echo "--- Done (partial — no GitHub API changes applied) ---"
     _print_next_steps
     exit 0
 fi
@@ -109,7 +121,7 @@ gh api "repos/$REPO/automated-security-fixes" --method PUT --silent
 echo ""
 echo "--- Done. Next steps: ---"
 echo ""
-echo "  1. Review and update README.md"
+echo "  1. Update README.md with your project description"
 echo "  2. git add . && git commit -m 'feat: initial commit'"
 echo "  3. git push -u origin main"
 echo "  4. When ready to release: git tag v1.0.0 && git push origin v1.0.0"

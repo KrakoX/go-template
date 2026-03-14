@@ -1,3 +1,3 @@
-module github.com/{{GITHUB_OWNER}}/{{REPO_NAME}}
+module github.com/KrakoX/go-template
 
 go 1.25.0
