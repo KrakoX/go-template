@@ -1,6 +1,6 @@
 # Binaries
-{{PROJECT_NAME}}
-{{PROJECT_NAME}}-*
+go-template
+go-template-*
 dist/
 
 # Build artifacts

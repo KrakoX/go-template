@@ -10,7 +10,7 @@
 
 Please do **not** file a public GitHub issue for security vulnerabilities.
 
-Open a [GitHub Security Advisory](https://github.com/{{GITHUB_OWNER}}/{{REPO_NAME}}/security/advisories/new) instead, or email the maintainer directly (see the GitHub profile).
+Open a [GitHub Security Advisory](https://github.com/KrakoX/go-template/security/advisories/new) instead, or email the maintainer directly (see the GitHub profile).
 
 Include the following in your report:
 - Description of the vulnerability

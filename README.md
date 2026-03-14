@@ -34,7 +34,7 @@ cd my-tool
 bash setup.sh KrakoX/my-tool my-tool
 ```
 
-`setup.sh` replaces all `{{PLACEHOLDER}}` values, installs the pre-push hook, and applies branch protection and Dependabot settings via the GitHub API.
+`setup.sh` replaces template values (`KrakoX`, `go-template`) with your project details, installs the pre-push hook, and applies branch protection and Dependabot settings via the GitHub API.
 
 ### 3. Start building
 
@@ -56,16 +56,16 @@ GoReleaser builds the binaries and creates the GitHub Release automatically.
 
 ---
 
-## Placeholders
+## What setup.sh replaces
 
-`setup.sh` replaces these values across all files:
+The template uses its own real values as placeholders. `setup.sh` replaces them with your project-specific values:
 
-| Placeholder | Example value | Used in |
-|-------------|---------------|---------|
-| `{{PROJECT_NAME}}` | `my-tool` | Makefile, goreleaser, main.go, .gitignore |
-| `{{GITHUB_OWNER}}` | `KrakoX` | go.mod, goreleaser, SECURITY.md |
-| `{{REPO_NAME}}` | `my-tool` | go.mod, goreleaser, SECURITY.md |
-| `{{COPYRIGHT_YEAR}}` | `2026` | LICENSE |
+| Template value | Replaced with | Files |
+|---------------|---------------|-------|
+| `KrakoX/go-template` | `owner/repo` | go.mod, SECURITY.md |
+| `go-template` | your project name | Makefile, .goreleaser.yaml, main.go, .gitignore |
+| `KrakoX` | your GitHub owner | .goreleaser.yaml, LICENSE |
+| copyright year | current year | LICENSE |
 
 ---
 
